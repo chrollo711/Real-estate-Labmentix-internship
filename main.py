@@ -37,9 +37,12 @@ async def predict_property_value(data: PropertyInput):
                                2016 - data.buildYear)
     predicted_value = model.predict([[data.bedrooms, data.bathrooms, data.livingArea, data.grade, effectiveAge]])
     classification = model2.predict([[predicted_value[0], effectiveAge]])
+    is_good = bool(classification[0])
+
     return {
         "prediction": float(predicted_value[0]),
-        "Investment": bool(classification),  # Optional: model confidence score
+        "is_good_investment": is_good,
+        "investment_label": "Good Investment" if is_good else "Bad Investment",
         "formatted_prediction": f"${predicted_value[0]:,.0f}",  # Optional: pre-formatted string
         "currency": "INR"
     }
