@@ -8,6 +8,7 @@ from sklearn.ensemble import RandomForestRegressor as rfg
 from sklearn.metrics import mean_squared_error, r2_score
 import numpy as np
 import pickle
+from sklearn.ensemble import RandomForestClassifier as rfc
 
 df = pd.read_csv("House Price India.csv")
 df['Date'] = pd.to_datetime(df['Date'], unit='D', origin='1899-12-30')
@@ -92,10 +93,10 @@ y = df[['Price']]
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-model =rfg(n_estimators=100, random_state=0)
+model1 =rfg(n_estimators=100, random_state=0)
 
-model.fit(X_train, y_train)
-y_pred = model.predict(X)
+model1.fit(X_train, y_train)
+y_pred = model1.predict(X)
 df['Predicted_2016_Price'] = y_pred.copy()
 
 
@@ -106,7 +107,16 @@ df['Predicted_2021_Price'] = df.apply(
     axis=1
 )
 
-pickle.dump(model , open('house-pricing.pkl' , 'wb'))
+pickle.dump(model1 , open('house-pricing.pkl' , 'wb'))
 
 mse = mean_squared_error(y, y_pred)
 r2 = r2_score(y, y_pred)
+
+
+X_1 = df[['Price','Effective_Age']]
+y_1 = df[['Good investement']]
+
+model2 = rfc(n_estimators=100, random_state=0)
+model2.fit(X_1, y_1)
+
+pickle.dump(model2 , open('house-classification.pkl' , 'wb'))

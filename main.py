@@ -20,6 +20,7 @@ app.add_middleware(
 
 
 model = pickle.load(open('house-pricing.pkl' , 'rb'))
+model2 = pickle.load(open('house-classification.pkl' , 'rb'))
 
 class PropertyInput(BaseModel):
     bedrooms: int
@@ -35,10 +36,10 @@ async def predict_property_value(data: PropertyInput):
                               2016 - data.renovationYear,
                                2016 - data.buildYear)
     predicted_value = model.predict([[data.bedrooms, data.bathrooms, data.livingArea, data.grade, effectiveAge]])
-    
+    classification = model2.predict([[predicted_value[0], effectiveAge]])
     return {
         "prediction": float(predicted_value[0]),
-        "confidence": 92.5,  # Optional: model confidence score
+        "Investment": bool(classification),  # Optional: model confidence score
         "formatted_prediction": f"${predicted_value[0]:,.0f}",  # Optional: pre-formatted string
         "currency": "INR"
     }
